@@ -5,6 +5,7 @@
 #include "GUI_BMPfile.h"
 #include "ImageData.h"
 #include "EPD_2in13.h"
+
 void  Handler(int signo)
 {
     //System Exit
@@ -14,6 +15,7 @@ void  Handler(int signo)
 
     exit(0);
 }
+
 int main(void)
 {
     printf("2.13inch e-Paper demo\r\n");
@@ -40,35 +42,52 @@ int main(void)
     Paint_SelectImage(BlackImage);
     Paint_SetMirroring(MIRROR_HORIZONTAL); //
     Paint_Clear(WHITE);
-#if 1   // show bmp    
+    // show bmp    
     printf("show bmp\r\n");
     Paint_SelectImage(BlackImage);
     
     Paint_Clear(WHITE);
     GUI_ReadBmp("./pic/100x100.bmp", 0, 0);
+    Paint_DrawString_EN(120, 20,"Temperature:", &Font16, WHITE, BLACK);
     EPD_Display(BlackImage);
     DEV_Delay_ms(500);
+    //Partial refresh, example shows time    
+    if(EPD_Init(PART_UPDATE) != 0) {
+        printf("e-Paper init failed\r\n");
+    }
 
-    Paint_Clear(WHITE);    
-    GUI_ReadBmp("./pic/bbb.bmp", 0, 0);
-    EPD_Display(BlackImage);
-    DEV_Delay_ms(2000);
-#endif
-
-//show image for array    
-    printf("show image for array\r\n");
     Paint_SelectImage(BlackImage);
-    Paint_Clear(WHITE);
-    Paint_DrawBitMap(gImage_2in13);
-    EPD_Display(BlackImage);
-    DEV_Delay_ms(2000);
-    Paint_SelectImage(BlackImage);
-    Paint_Clear(WHITE);
-    // 2.Drawing on the image 
-    Paint_DrawString_EN(140, 15, "Hellow World", &Font20, BLACK, WHITE);
-    EPD_Display(BlackImage);
+    PAINT_TIME sPaint_time;
+    struct tm *t;
+    time_t tt;
+    for (;;) {
+        time(&tt);
+        t = localtime(&tt);
+        sPaint_time.Hour = t->tm_hour;
+        sPaint_time.Min = t->tm_min;
+        sPaint_time.Sec = t->tm_sec;
+        Paint_ClearWindows(140, 90, 140 + Font20.Width * 7, 90 + Font20.Height, WHITE);
+        Paint_DrawTime(140, 90, &sPaint_time, &Font20, WHITE, BLACK);
+        EPD_DisplayPart(BlackImage);
+        char line[255];
+        if((t->tm_sec>30) && (t->tm_sec <=32))
+        {
+            FILE * fpointer = fopen("/home/pi/Desktop/ePaper-Project/bcm2835/obj/data.txt","r");
+            fgets(line,255,fpointer);
+            fclose(fpointer);
+            Paint_SelectImage(BlackImage);
+            Paint_ClearWindows(140, 40, 140 + Font16.Width * 7, 40 + Font16.Height, WHITE);
+            Paint_DrawString_EN(140, 40,line, &Font16, WHITE, BLACK);
+            EPD_Display(BlackImage);
+        }
+        if(t->tm_sec>29 && (t->tm_sec <=30))
+        {
+            Paint_ClearWindows(140, 40, 140 + Font16.Width * 7, 40 + Font16.Height, WHITE);
+        }
+    }
     printf("Goto Sleep mode...\r\n");
     EPD_Sleep();
+    
     if(NULL != BlackImage){
         free(BlackImage);
         BlackImage = NULL;        
