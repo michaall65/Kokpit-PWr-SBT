@@ -1,12 +1,15 @@
-
-include <stdlib.h>     //exit()
+#include <stdlib.h>     //exit()
 #include <signal.h>     //signal()
 #include <time.h>
 #include "GUI_Paint.h"
 #include "GUI_BMPfile.h"
 #include "ImageData.h"
 #include "EPD_2in13.h"
-
+#include <unistd.h>
+int msleep(unsigned int tms)
+{
+    return usleep(tms * 1000);
+}
 void  Handler(int signo)
 {
     //System Exit
@@ -58,31 +61,27 @@ int main(void)
     }
 
     Paint_SelectImage(BlackImage);
-    PAINT_TIME sPaint_time;
-    struct tm *t;
-    time_t tt;
+    //PAINT_TIME sPaint_time;
+    //struct tm *t;
+    //time_t tt;
+    char line[255];
+    // work with frequency of 2Hz , unfortunatelly we can not display our variables with frequency of 2Hz and local time at the same time 
     for (;;) {
-        time(&tt);
-        t = localtime(&tt);
-        sPaint_time.Hour = t->tm_hour;
-        sPaint_time.Min = t->tm_min;
-        sPaint_time.Sec = t->tm_sec;
-        Paint_ClearWindows(140, 90, 140 + Font20.Width * 7, 90 + Font20.Height, WHITE);
-        Paint_DrawTime(140, 90, &sPaint_time, &Font20, WHITE, BLACK);
+        //time(&tt);
+        //t = localtime(&tt);
+        //sPaint_time.Hour = t->tm_hour;
+        //sPaint_time.Min = t->tm_min;
+        //sPaint_time.Sec = t->tm_sec;
+        //Paint_ClearWindows(140, 90, 140 + Font20.Width * 7, 90 + Font20.Height, WHITE);
+        //Paint_DrawTime(140, 90, &sPaint_time, &Font20, WHITE, BLACK);
+        //EPD_DisplayPart(BlackImage);
+        FILE * fpointer = fopen("/home/pi/Desktop/ePaper-Project/bcm2835/obj/data.txt","r");
+        fgets(line,255,fpointer);
+        Paint_ClearWindows(140, 40, 140 + Font16.Width * 7, 40 + Font16.Height, WHITE);
+        Paint_DrawString_EN(140, 40,line, &Font16, WHITE, BLACK);
         EPD_DisplayPart(BlackImage);
-        char line[255];
-        if((t->tm_sec>30) && (t->tm_sec <=32))
-        {
-            FILE * fpointer = fopen("/home/pi/Desktop/ePaper-Project/bcm2835/obj/data.txt","r");
-            fgets(line,255,fpointer);
-            fclose(fpointer);
-			//Paint_ClearWindows(140, 40, 140 + Font16.Width * 7, 40 + Font16.Height, WHITE);
-            Paint_SelectImage(BlackImage);
-            Paint_ClearWindows(140, 40, 140 + Font16.Width * 7, 40 + Font16.Height, WHITE);
-            Paint_DrawString_EN(140, 40,line, &Font16, WHITE, BLACK);
-            EPD_Display(BlackImage);
-        }
-    }
+        msleep(10);
+       }
     printf("Goto Sleep mode...\r\n");
     EPD_Sleep();
     

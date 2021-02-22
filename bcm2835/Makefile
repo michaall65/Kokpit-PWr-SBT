@@ -10,7 +10,7 @@ TARGET = epd
 
 CC = gcc
 
-MSG = -g -O0 -Wall
+MSG = -g -O0 -Wall -lrt
 DEBUG = -D USE_DEBUG
 # DEBUG = 
 CFLAGS += $(MSG) $(DEBUG)
