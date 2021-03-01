@@ -21,6 +21,10 @@ Display which support partial refreshment:
 
 3.7 inch https://kamami.pl/wyswietlacze-e-paper/582617-37inch-e-paper-hat-modul-z-wyswietlaczem-e-paper-37-480x280-dla-raspberry-pi.html
 
+4.2 inch https://kamami.pl/wyswietlacze-e-paper/569472-waveshare-wyswietlacz-epaper-o-przekatnej-42-z-spi.html
+
+2.13 inch https://kamami.pl/wyswietlacze-e-paper/568064-waveshare-wyswietlacz-epaper-o-przekatnej-213-z-spi-nakladka-hat-dla-raspberry-pi.html
+
 
 
 
