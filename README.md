@@ -17,6 +17,10 @@ Example video with refresh rate 2Hz.
 
 https://user-images.githubusercontent.com/74863849/108852741-470e9d00-75e6-11eb-895a-25788ef8e2c0.mov
 
+Display which support partial refreshment:
+
+3.7 inch https://kamami.pl/wyswietlacze-e-paper/582617-37inch-e-paper-hat-modul-z-wyswietlaczem-e-paper-37-480x280-dla-raspberry-pi.html
+
 
 
 
